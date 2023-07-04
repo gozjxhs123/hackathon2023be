@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { RecordModule } from './record/record.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { AuthModule } from './auth/auth.module';
         password: process.env.REDIS_PW,
       }
     }),
-    AuthModule
+    AuthModule,
+    RecordModule
   ],
   controllers: [],
   providers: [],

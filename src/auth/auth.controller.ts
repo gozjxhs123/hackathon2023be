@@ -36,4 +36,17 @@ export class AuthController {
             statusMsg: ""
         })
     }
+
+    @Post('login')
+    async login(
+        @Body() userDto: userDto
+    ) {
+        const data = await this.authService.login(userDto);
+
+        return Object.assign({
+            data,
+            statusCode: 201,
+            statusMsg: "로그인 성공"
+        })
+    }
 }

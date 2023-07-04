@@ -75,6 +75,16 @@ export class AuthService {
         }
     }
 
+    async logout(tokenDto: tokenDto): Promise<string> {
+        const { userID } = await this.validateAccess(tokenDto);
+
+        if (!userID) throw new UnauthorizedException();
+
+        await this.redis.set(`${userID}AccessToken`, null);
+
+        return this.redis.get(`${userID}AccessToken`);
+    }
+
     async generateAccessToken(userID: number, userStrID: string) {
         const payload = {
             userID,

@@ -50,4 +50,15 @@ export class AuthController {
             statusMsg: "로그인 성공"
         })
     }
+
+    @Delete('logout')
+    async logout(@Headers() tokenDto: tokenDto) {
+        const data = await this.authService.logout(tokenDto);
+
+        return Object.assign({
+            data,
+            statusCode: 204,
+            statusMsg: "로그아웃 성공"
+        })
+    }
 }

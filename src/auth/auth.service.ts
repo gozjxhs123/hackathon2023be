@@ -1,5 +1,5 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException, UseFilters } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException, UseFilters } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Redis } from 'ioredis';
 import { HttpExceptionFilter } from 'src/http.exception.filter/http.exception.filter';
@@ -25,7 +25,7 @@ export class AuthService {
         const { userStrID, userPW } = user;
         
         if (await this.authEntity.findOneBy({ userStrID })) throw new ConflictException();
-        
+
         if (!userPW.match("^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$")) throw new ConflictException();
 
         const userHashedPW: string = await bcrypt.hash(userPW, 10);
@@ -36,5 +36,17 @@ export class AuthService {
         })
 
         return newUser;
+    }
+
+    async deleteUserAcc(userID: number, userPW: string): Promise<object> {
+        const thisUser = await this.authEntity.findOneBy({ userID });
+
+        if (!thisUser) throw new NotFoundException();
+
+        if (!await bcrypt.compare(userPW, thisUser.userPW)) throw new ForbiddenException();
+
+        await this.authEntity.delete({ userID });
+
+        return thisUser;
     }
 }

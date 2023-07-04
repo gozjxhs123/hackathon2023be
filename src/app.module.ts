@@ -1,3 +1,4 @@
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,6 +23,14 @@ import { AuthModule } from './auth/auth.module';
       migrations: [__dirname + '/**/migrations/*.js'],
       migrationsTableName: 'migrations',
       autoLoadEntities: true,
+    }),
+    RedisModule.forRoot({
+      readyLog: true,
+      config: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+        password: process.env.REDIS_PW,
+      }
     }),
     AuthModule
   ],

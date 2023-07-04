@@ -26,7 +26,7 @@ export class AuthService {
 
     async createUserAcc(user: userDto): Promise<object> {
         
-        const { userStrID, userPW } = user;
+        const { userStrID, userPW, userName } = user;
         
         if (await this.authEntity.findOneBy({ userStrID })) throw new ConflictException();
 
@@ -36,6 +36,7 @@ export class AuthService {
 
         const newUser = await this.authEntity.save({
             userStrID,
+            userName,
             userPW: userHashedPW,
         })
 

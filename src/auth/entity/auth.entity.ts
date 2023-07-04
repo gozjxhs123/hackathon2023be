@@ -16,4 +16,9 @@ export class authEntity {
         type: 'varchar'
     })
     userPW: string;
+
+    @Column({
+        type: 'varchar'
+    })
+    userName: string;
 }

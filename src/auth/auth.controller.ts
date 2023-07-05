@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Headers, Post, UseFilters } from '@nestjs/com
 import { ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiHeaders, ApiNoContentResponse, ApiNotFoundResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/http.exception.filter/http.exception.filter';
 import { AuthService } from './auth.service';
+import { loginDto } from './dto/login.dto';
 import { tokenDto } from './dto/token.dto';
 import { userDto } from './dto/user.dto';
 
@@ -81,9 +82,9 @@ export class AuthController {
     })
     @Post('login')
     async login(
-        @Body() userDto: userDto
+        @Body() loginDto: loginDto
     ) {
-        const data = await this.authService.login(userDto);
+        const data = await this.authService.login(loginDto);
 
         return Object.assign({
             data,

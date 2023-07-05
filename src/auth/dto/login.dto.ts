@@ -1,17 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class userDto {
+export class loginDto {
     @ApiProperty({
         example: "asdf",
         description: "사용자가 로그인 시 사용할 ID"
     })
     userStrID: string;
-
-    @ApiProperty({
-        example: "01012345678",
-        description: "사용자 전화번호"
-    })
-    userPhone: string;
 
     @ApiProperty({
         example: "asdfqwer12!@",

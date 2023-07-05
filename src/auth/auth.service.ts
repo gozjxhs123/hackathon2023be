@@ -7,10 +7,11 @@ import { Repository } from 'typeorm';
 import { authEntity } from './entity/auth.entity';
 import * as bcrypt from 'bcrypt';
 import { userDto } from './dto/user.dto';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { tokenDto } from './dto/token.dto';
 import { tokenResultDto } from './dto/tokenResult.dto';
+import { loginDto } from './dto/login.dto';
 
 @UseFilters(new HttpExceptionFilter())
 @Injectable()
@@ -26,17 +27,19 @@ export class AuthService {
 
     async createUserAcc(user: userDto): Promise<object> {
         
-        const { userStrID, userPW, userName } = user;
+        const { userStrID, userPW, userPhone } = user;
         
         if (await this.authEntity.findOneBy({ userStrID })) throw new ConflictException('아이디 중복');
+        if (await this.authEntity.findOneBy({ userPhone })) throw new ConflictException('전화번호 중복');
 
+        if (!userPhone.match("^[0-9]{2,3}[0-9]{3,4}[0-9]{4}$")) throw new ConflictException('전화번호 규칙에 일치하지 않음')
         if (!userPW.match("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,}$")) throw new ConflictException('비밀번호 규칙에 맞지 않음');
 
         const userHashedPW: string = await bcrypt.hash(userPW, 10);
 
         const newUser = await this.authEntity.save({
             userStrID,
-            userName,
+            userPhone,
             userPW: userHashedPW,
         })
 
@@ -57,8 +60,8 @@ export class AuthService {
         return thisUser;
     }
 
-    async login(userDto: userDto): Promise<object> {
-        const { userStrID, userPW } = userDto;
+    async login(loginDto: loginDto): Promise<object> {
+        const { userStrID, userPW } = loginDto;
 
         const thisUser = await this.authEntity.findOneBy({ userStrID });
 

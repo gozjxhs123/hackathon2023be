@@ -1,32 +1,31 @@
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { HttpException, Injectable, NotFoundException, UnauthorizedException, UseFilters } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Redis } from 'ioredis';
 import { AuthService } from 'src/auth/auth.service';
 import { tokenDto } from 'src/auth/dto/token.dto';
 import { authEntity } from 'src/auth/entity/auth.entity';
+import { HttpExceptionFilter } from 'src/http.exception.filter/http.exception.filter';
 import { Repository } from 'typeorm';
-import { recordEntity } from './entity/record.entity';
 
+@UseFilters(new HttpExceptionFilter())
 @Injectable()
 export class RecordService {
     constructor(
-        @InjectRepository(recordEntity) private recordEntity: Repository<recordEntity>,
         @InjectRepository(authEntity) private authEntity: Repository<authEntity>,
         private authService: AuthService,
     ) {
-        this.authService = authService;
+        this.authService = authService; 
     }
-    async getDateList(tokenDto: tokenDto): Promise<object> {
+    async getMainPage(tokenDto: tokenDto): Promise<object> {
         const { userID } = await this.authService.validateAccess(tokenDto);
+
+        if (!userID) throw new UnauthorizedException();
 
         const thisUser = await this.authEntity.findOne({
             where: { userID },
-            select: ['userName']
-        });
-        if (!thisUser) throw new UnauthorizedException();
+        })
 
-        return thisUser;
+        if (!thisUser) throw new NotFoundException();
+
+        return await this.authEntity.findOneBy({userID});
     }
 }

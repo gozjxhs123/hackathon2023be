@@ -1,18 +1,17 @@
 import { Module } from '@nestjs/common';
+import { RecordService } from './record.service';
+import { RecordController } from './record.controller';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthService } from 'src/auth/auth.service';
 import { authEntity } from 'src/auth/entity/auth.entity';
-import { recordEntity } from './entity/record.entity';
-import { RecordController } from './record.controller';
-import { RecordService } from './record.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
+
   imports: [
     TypeOrmModule.forFeature([
-      authEntity,
-      recordEntity,
+      authEntity
     ]),
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -27,7 +26,7 @@ import { RecordService } from './record.service';
       })
     })
   ],
-  controllers: [RecordController],
-  providers: [RecordService, AuthService]
+  providers: [RecordService, AuthService],
+  controllers: [RecordController]
 })
 export class RecordModule {}

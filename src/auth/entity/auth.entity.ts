@@ -18,7 +18,8 @@ export class authEntity {
     userPW: string;
 
     @Column({
-        type: 'varchar'
+        type: 'varchar',
+        unique: true
     })
-    userName: string;
+    userPhone: string;
 }

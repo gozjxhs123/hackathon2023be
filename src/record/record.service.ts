@@ -21,14 +21,12 @@ export class RecordService {
     async getDateList(tokenDto: tokenDto): Promise<object> {
         const { userID } = await this.authService.validateAccess(tokenDto);
 
-        const thisUser = await this.authEntity.findOneByOrFail({ userID });
+        const thisUser = await this.authEntity.findOne({
+            where: { userID },
+            select: ['userName']
+        });
         if (!thisUser) throw new UnauthorizedException();
 
-        const thisList = await this.recordEntity.find({
-            where: { userID },
-            select: ['recordDate', 'recordTime']
-        });
-
-        return thisList;
+        return thisUser;
     }
 }

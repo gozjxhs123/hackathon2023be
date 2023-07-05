@@ -28,9 +28,9 @@ export class AuthService {
         
         const { userStrID, userPW, userName } = user;
         
-        if (await this.authEntity.findOneBy({ userStrID })) throw new ConflictException();
+        if (await this.authEntity.findOneBy({ userStrID })) throw new ConflictException('아이디 중복');
 
-        if (!userPW.match("^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$")) throw new ConflictException();
+        if (!userPW.match("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,}$")) throw new ConflictException('비밀번호 규칙에 맞지 않음');
 
         const userHashedPW: string = await bcrypt.hash(userPW, 10);
 

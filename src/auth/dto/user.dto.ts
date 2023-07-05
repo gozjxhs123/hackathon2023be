@@ -15,7 +15,7 @@ export class userDto {
 
     @ApiProperty({
         example: "asdfqwer12!@",
-        description: "8글자 이상, 특수문자 1개 이상 포함, 영어 대소문자 포함"
+        description: "8글자 이상, 특수문자 1개 이상 포함, 영어 대소문자 포함, 숫자 포함"
     })
     userPW: string;
 }
